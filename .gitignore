@@ -1,0 +1,52 @@
+# Node.js dependencies
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+
+# Logs
+logs
+*.log
+*.log.*
+
+# Build artifacts
+dist/
+build/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Editor / OS files
+.DS_Store
+*.swp
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Docker
+*.pid
+*.seed
+*.pid.lock
+
+# Terraform
+terraform/.terraform/
+terraform/.terraform.lock.hcl
+terraform/terraform.tfstate
+terraform/terraform.tfstate.backup
+terraform/crash.log
+terraform/*.tfvars
+terraform/*.tfvars.json
+
+# Optional: Ignore compiled outputs
+*.out
+*.exe
+*.dll
+*.so
+*.class
+*.pyc
+
+# Coverage
+coverage/
