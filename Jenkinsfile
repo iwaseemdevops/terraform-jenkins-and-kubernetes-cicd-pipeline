@@ -18,7 +18,7 @@ pipeline {
 
         stage('Build Backend') {
             steps {
-                dir('backend') {
+                dir('microservices/backend') {
                     script {
                         docker.build("${ECR_REGISTRY}/backend:${env.BUILD_ID}")
                     }
@@ -57,7 +57,7 @@ pipeline {
 
         stage('Test Frontend') {
             steps {
-                dir('frontend') {
+                dir('microservices/frontend') {
                     sh 'echo "Running frontend tests..."'
                     sh 'npm test || true'
                 }
@@ -93,7 +93,6 @@ pipeline {
         stage('Smoke Test') {
             steps {
                 script {
-                    // Get NodePort dynamically (assuming frontend-service is NodePort type)
                     def nodePort = sh(
                         script: "kubectl get svc frontend-service -o jsonpath='{.spec.ports[0].nodePort}'",
                         returnStdout: true
