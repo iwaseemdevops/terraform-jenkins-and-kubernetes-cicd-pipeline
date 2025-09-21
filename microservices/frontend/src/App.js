@@ -9,7 +9,7 @@ function App() {
   const fetchData = async () => {
     try {
       // This will be updated to use the service name in Kubernetes
-      const response = await axios.get("http://localhost:5000/api/hello");
+      const response = await axios.get("http://13.235.0.29:5000/api/hello");
       setMessage(response.data.message);
       setVisitors(response.data.visitors);
       setError("");

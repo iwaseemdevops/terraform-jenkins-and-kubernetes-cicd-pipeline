@@ -21,10 +21,11 @@ resource "aws_instance" "cicd_server" {
   subnet_id              = aws_subnet.public.id
   vpc_security_group_ids = [aws_security_group.cicd_sg.id]
   key_name               = aws_key_pair.cicd_key.key_name
+  iam_instance_profile   = aws_iam_instance_profile.ec2_profile.name
 
   user_data = file("setup.sh")
   
-  # Root disk size - increased to 20GB (Free Tier allows 30GB of EBS storage)
+
   root_block_device {
     volume_size = 20
     volume_type = "gp2"
