@@ -28,7 +28,7 @@ pipeline {
 
         stage('Test Backend') {
             steps {
-                dir('backend') {
+                dir('microservices/backend') {
                     sh 'echo "Running backend tests..."'
                     sh 'npm test || true'  // Example tests
                 }
@@ -47,7 +47,7 @@ pipeline {
 
         stage('Build Frontend') {
             steps {
-                dir('frontend') {
+                dir('microservices/frontend') {
                     script {
                         docker.build("${ECR_REGISTRY}/frontend:${env.BUILD_ID}")
                     }
