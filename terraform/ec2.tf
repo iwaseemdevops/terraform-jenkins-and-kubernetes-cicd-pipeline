@@ -16,7 +16,7 @@ resource "aws_key_pair" "cicd_key" {
 # Single server for both Jenkins and Kubernetes (Free Tier)
 resource "aws_instance" "cicd_server" {
   ami                    = data.aws_ami.amazon_linux_2.id
-  instance_type          = "t3.medium" 
+  instance_type          = "t2.medium" 
   subnet_id              = aws_subnet.public.id
   vpc_security_group_ids = [aws_security_group.cicd_sg.id]
   key_name               = aws_key_pair.cicd_key.key_name
