@@ -36,7 +36,6 @@ pipeline {
         stage('Push Backend to ECR') {
             steps {
                 script {
-                    // Login using EC2 instance IAM role (no credentials needed)
                     sh """
                         aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${ECR_REGISTRY}
                     """
@@ -66,7 +65,6 @@ pipeline {
         stage('Push Frontend to ECR') {
             steps {
                 script {
-                   
                     sh """
                         aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${ECR_REGISTRY}
                     """
@@ -77,10 +75,9 @@ pipeline {
 
         stage('Deploy to Kubernetes') {
             steps {
-                withCredentials([string(credentialsId: 'k3s-kubeconfig', variable: 'KUBECONFIG_CONTENT')]) {
-                    writeFile file: 'kubeconfig.yaml', text: "${KUBECONFIG_CONTENT}"
+                withCredentials([file(credentialsId: 'k3s-kubeconfig', variable: 'KUBECONFIG_FILE')]) {
                     sh """
-                        export KUBECONFIG=kubeconfig.yaml
+                        export KUBECONFIG=${KUBECONFIG_FILE}
                         kubectl set image deployment/backend-deployment backend=${ECR_REGISTRY}/backend:latest
                         kubectl set image deployment/frontend-deployment frontend=${ECR_REGISTRY}/frontend:latest
 
@@ -93,20 +90,19 @@ pipeline {
 
         stage('Smoke Test') {
             steps {
-                withCredentials([string(credentialsId: 'k3s-kubeconfig', variable: 'KUBECONFIG_CONTENT')]) {
-                    writeFile file: 'kubeconfig.yaml', text: "${KUBECONFIG_CONTENT}"
+                withCredentials([file(credentialsId: 'k3s-kubeconfig', variable: 'KUBECONFIG_FILE')]) {
                     script {
                         def nodePort = sh(
-                            script: "kubectl --kubeconfig=kubeconfig.yaml get svc frontend-service -o jsonpath='{.spec.ports[0].nodePort}'",
+                            script: "kubectl --kubeconfig=${KUBECONFIG_FILE} get svc frontend-service -o jsonpath='{.spec.ports[0].nodePort}'",
                             returnStdout: true
                         ).trim()
                         def nodeIp = sh(
-                            script: "kubectl --kubeconfig=kubeconfig.yaml get nodes -o jsonpath='{.items[0].status.addresses[?(@.type==\"ExternalIP\")].address}'",
+                            script: "kubectl --kubeconfig=${KUBECONFIG_FILE} get nodes -o jsonpath='{.items[0].status.addresses[?(@.type==\"ExternalIP\")].address}'",
                             returnStdout: true
                         ).trim()
                         if (!nodeIp) {
                             nodeIp = sh(
-                                script: "kubectl --kubeconfig=kubeconfig.yaml get nodes -o jsonpath='{.items[0].status.addresses[?(@.type==\"InternalIP\")].address}'",
+                                script: "kubectl --kubeconfig=${KUBECONFIG_FILE} get nodes -o jsonpath='{.items[0].status.addresses[?(@.type==\"InternalIP\")].address}'",
                                 returnStdout: true
                             ).trim()
                         }
@@ -129,7 +125,6 @@ pipeline {
         }
         always {
             sh 'docker system prune -f || true'
-            sh 'rm -f kubeconfig.yaml'
         }
     }
 }
