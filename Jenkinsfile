@@ -11,8 +11,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 git branch: 'main',
-                    url: 'https://github.com/iwaseemdevops/terraform-jenkins-and-kubernetes-cicd-pipeline.git',
-                    credentialsId: 'github-cres'
+                    url: 'https://github.com/iwaseemdevops/terraform-jenkins-and-kubernetes-cicd-pipeline.git'
             }
         }
 
@@ -110,10 +109,10 @@ pipeline {
 
     post {
         success {
-            echo '✅ Pipeline completed successfully!'
+            echo 'Pipeline completed successfully!'
         }
         failure {
-            echo '❌ Pipeline failed!'
+            echo 'Pipeline failed!'
         }
         always {
             sh 'docker system prune -f || true'
