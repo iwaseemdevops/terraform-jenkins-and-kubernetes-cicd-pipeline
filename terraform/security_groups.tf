@@ -1,4 +1,3 @@
-# security_groups.tf
 resource "aws_security_group" "cicd_sg" {
   name        = "cicd_sg"
   description = "Allow traffic for CI/CD server"
@@ -10,7 +9,7 @@ resource "aws_security_group" "cicd_sg" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["118.103.228.102/32"] # REPLACE WITH YOUR IP
+    cidr_blocks = ["118.103.228.110/32"] # REPLACE WITH YOUR IP
   }
 
   # Allow HTTP for Jenkins UI
