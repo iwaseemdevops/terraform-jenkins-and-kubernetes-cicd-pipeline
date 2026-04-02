@@ -9,7 +9,7 @@ resource "aws_security_group" "cicd_sg" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["103.203.45.139/32"] # REPLACE WITH YOUR IP
+    cidr_blocks = ["43.230.93.153/32"] # REPLACE WITH YOUR IP
   }
 
   # Allow HTTP for Jenkins UI
